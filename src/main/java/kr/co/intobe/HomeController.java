@@ -41,4 +41,9 @@ public class HomeController {
 		return "side";
 	}
 	
+	@RequestMapping(value = "/chat",  method = RequestMethod.GET)
+	public String chatMain() {
+		return "chat";
+	}
+	
 }
