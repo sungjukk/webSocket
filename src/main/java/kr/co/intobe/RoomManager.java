@@ -30,16 +30,13 @@ public class RoomManager {
 	}
 	
 	public Room joinRoom(User user, String roomName) {
-		Room room = null;
 		for (Room rm : roomList) {
 			if (rm.getRoomName().equals(roomName)) {
 				logger.info("방에 접속하는 유저 id : {}", user.getId());
-				rm.enterRoom(user);
-				room = rm;
-				break;
+				return rm;
 			}
 		}
-		return room;
+		return null;
 	}
 	
 	public static void removeRoom(Room room) {

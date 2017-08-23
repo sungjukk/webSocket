@@ -30,7 +30,8 @@
 		sock = new SockJS("<c:url value='/echo' />");
 		
 		function init() {
-			userId = prompt("아이디 입력", "");
+			//userId = prompt("아이디 입력", "");
+			userId = 'asd';
 			loginSocket(userId);
 		}
 		
@@ -72,6 +73,7 @@
 			case 'userList' : initUserList(data); break;
 			case 'roomList' : initRoomList(data); break;
 			case 'sendMsg' : receiveMsg(data); break;
+			case 'error' : socketError(data); break;
 			}
 		}
 		
@@ -109,6 +111,11 @@
 			location.href = "/#chat";
 		}
 		
+		function socketError(data) {
+			alert(data.message);
+			sock.close();
+		}
+		
 	</script>
 	<script src="/resources/js/chat.js"></script>
 </head>
@@ -118,7 +125,7 @@
 			<div id="roomList"></div>
 			<input type="text" id="roomName" />
 			<input type="button" id="createRoom" value="방만들기" />
-			<a href="/side">페이지 이동</a>
+			<button type="button" onclick="closeSocket()">연걸끊기</button>
 			<div id="data"></div> 
 		</div>
 	</body>

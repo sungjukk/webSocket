@@ -5,6 +5,7 @@ import org.springframework.web.socket.WebSocketSession;
 public class User {
 	private String id;
 	private WebSocketSession session;
+	private Room room;
 	
 	public User(String id, WebSocketSession session) {
 		this.id = id;
@@ -25,5 +26,14 @@ public class User {
 
 	public void setSession(WebSocketSession session) {
 		this.session = session;
+	}
+	
+	public void enterRoom(Room room) {
+		room.enterRoom(this);
+		this.room = room;
+	}
+	
+	public Room getRoom() {
+		return room;
 	}
 }

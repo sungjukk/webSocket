@@ -32,7 +32,6 @@ public class Room {
 	
 	public Room(User user, String roomName) {
 		userList = new ArrayList<User>();
-		userList.add(user);
 		this.name = roomName;
 	}
 	
@@ -48,10 +47,10 @@ public class Room {
 		}
 	}
 	
-	public String exitRoom(User user) {
+	public int exitRoom(User user) {
 		userList.remove(user);
-		logger.info("{} 님이 퇴장 하였습니다.", user.getId());
-		return user.getId() + "님이 퇴장 하였습니다.";
+		logger.info("{} 님이 퇴장 하였습니다.", user.getId()); 
+		return userList.size();
 	}
 	
 	public int getRoomSize() {
@@ -90,6 +89,7 @@ public class Room {
 		}
 		
 	}
+	
 	
 	public String getRoomName() {
 		return name;

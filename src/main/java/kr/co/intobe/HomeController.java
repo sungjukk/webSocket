@@ -43,6 +43,8 @@ public class HomeController {
 	
 	@RequestMapping(value = "/chat",  method = RequestMethod.GET)
 	public String chatMain() {
+		System.out.println("Asdasdsadsadadsadasd");
+		logger.info("여기 들어옴");
 		return "chat";
 	}
 	

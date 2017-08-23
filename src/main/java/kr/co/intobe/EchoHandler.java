@@ -22,13 +22,11 @@ public class EchoHandler extends TextWebSocketHandler {
 	
 	private ObjectMapper mapper = new ObjectMapper();
 	
-	private Map<String,Object> userMap;
+	private Map<String, Object> userMap = new HashMap<String, Object>();
+	
+	private Map<String, String> sessionMap = new HashMap<String, String>();
 	
 	private RoomManager roomManager = new RoomManager();
-	
-	private Room room;
-	
-	private User user;
 	
 	/**
 	 * 클라이언트 연결 시 실행되는 메소드
@@ -70,6 +68,15 @@ public class EchoHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		sessionList.remove(session);
+		User user = (User) userMap.get(sessionMap.get(session.getId()));
+		logger.info("userId : {}", user.getId());
+		if (user.getRoom() != null) {
+			if (user.getRoom().exitRoom(user) < 1) {
+				roomManager.removeRoom(user.getRoom());
+			}
+		}
+		sessionMap.remove(session.getId());
+		userMap.remove(user.getId());
 		logger.info("{} 연결 끊킴", session.getId());
 	}
 	
@@ -80,32 +87,52 @@ public class EchoHandler extends TextWebSocketHandler {
 		String type = (String) param.get("type");
 		switch(type) {
 		case "login" : 
-			userMap = new HashMap<String,Object>();
 			String id = (String) param.get("id");
-			user = new User(id, session);
-			userMap.put(id, user);
+			User equalsUser = (User) userMap.get(id);
+			if (equalsUser == null) {
+				User user = new User(id, session);
+				userMap.put(id, user);
+				sessionMap.put(session.getId(), user.getId());
+			} else {
+				if (equalsUser.getSession().isOpen()) {
+					equalsUser.getSession().sendMessage(new TextMessage("{ \"type\" : \"error\" , \"message\" : \"중복 로그인 됨\"}"));					
+				}
+				sessionMap.remove(equalsUser.getSession().getId());
+				sessionMap.put(session.getId(), equalsUser.getId());
+				equalsUser.setSession(session);
+				logger.info("{} 님이 재접속 하였습니다.", equalsUser.getId());
+			}
 			break;
 		case "createRoom" :
 			createRoom(session, message);
 			break;
 		case "enterRoom" : 
-			room.getUserList(session, message);
+			getRoom((String) param.get("id")).getUserList(session, message);
 			break;
 		case "joinRoom" :
-			roomManager.joinRoom(user, (String) param.get("roomName"));
+			User joinUser = (User) userMap.get((String) param.get("id"));
+			Room room = roomManager.joinRoom(joinUser, (String) param.get("roomName"));
+			joinUser.enterRoom(room);
 			break;
 		case "sendMsg" : 
-			room.sendMessage(session, message);
+			getRoom((String) param.get("sendId")).sendMessage(session, message);
 			break;
 		}
 		
 	}
 	
+	private Room getRoom(String id) {
+		User user = (User) userMap.get(id);
+		logger.info("user : {}",user);
+		return user.getRoom();
+	}
+	
 	private void createRoom(WebSocketSession session, TextMessage message) throws Exception {
 		Map<String,Object> param =  mapper.readValue(message.getPayload(), new TypeReference<Map<String,Object>>(){});
 		User user = (User) userMap.get((String) param.get("id"));
-		room = new Room();
+		Room room = new Room();
 		room = roomManager.createRoom(user, (String) param.get("roomName"));
+		user.enterRoom(room);
 	}
 	
 	private void sendMessage(Map<String, Object> param, WebSocketSession session, TextMessage message) throws Exception {

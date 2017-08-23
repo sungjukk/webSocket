@@ -11,7 +11,7 @@
 		</style>
 	</head>
 	<body>
-		<button type="button" id="chat" onclick="chatController()"></button>
+<!-- 		<button type="button" id="chat" onclick="chatController()"></button> -->
 		<div style="width: 704px; height: 500px">
 			<div class="chatRoom" style="border: 1px solid black; width: 500px; height: 100%"></div>
 			<div class="userListDiv" style="border: 1px solid black; width: 200px; height: 100%;">
@@ -24,4 +24,7 @@
 			<button type="button" onclick="sendMsg()">보내기</button>
 		</div>
 	</body>
+	<script type="text/javascript">
+		chatController();
+	</script>
 </html>

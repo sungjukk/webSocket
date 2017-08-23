@@ -4,7 +4,6 @@
 $(window).on('hashchange',function() {
 		goToFromHash();
 });
-		
 function goToFromHash(a) {
 	var hashtag = location.hash.substring(1, location.hash.length).replace(/ /gi, '%20');
     console.log(hashtag);
@@ -21,7 +20,5 @@ function goToFromHash(a) {
     switch(hashtag) {
     case 'chat' : html = '/chat'; break;
     }
-    
     $(".content").load(html);
-    $("#" + hashtag).trigger('click');
 }
