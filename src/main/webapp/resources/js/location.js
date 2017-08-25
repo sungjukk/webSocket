@@ -19,6 +19,7 @@ function goToFromHash(a) {
     var html = '';
     switch(hashtag) {
     case 'chat' : html = '/chat'; break;
+    case 'main' : html = '/'; break;
     }
     $(".content").load(html);
 }

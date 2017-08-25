@@ -23,8 +23,30 @@ function sendMsg() {
 	obj.type = "sendMsg";
 	
 	sock.send(JSON.stringify(obj));
+	
+	$("input[name=message]").val('');
 }
 
 function receiveMsg(data) {
 	$(".chatRoom").append(data.sendId + " : " + data.message + "</br>");
 }
+
+function outRoom() {
+	var obj = {};
+	obj.id = userId;
+	obj.type = "exitRoom";
+	
+	sock.send(JSON.stringify(obj));
+	
+	location.href = "/#main";
+}
+/*
+function exitRoom() {
+	var obj = {};
+	obj.id = userId;
+	obj.type = "exitRoom";
+	
+	sock.send(JSON.stringify(obj));
+	
+	location.href = "/";
+}*/

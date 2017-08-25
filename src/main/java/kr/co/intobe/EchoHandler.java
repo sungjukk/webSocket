@@ -69,14 +69,13 @@ public class EchoHandler extends TextWebSocketHandler {
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		sessionList.remove(session);
 		User user = (User) userMap.get(sessionMap.get(session.getId()));
-		logger.info("userId : {}", user.getId());
-		if (user.getRoom() != null) {
+		if (user != null) {
 			if (user.getRoom().exitRoom(user) < 1) {
 				roomManager.removeRoom(user.getRoom());
 			}
+			sessionMap.remove(session.getId());
+			userMap.remove(user.getId());
 		}
-		sessionMap.remove(session.getId());
-		userMap.remove(user.getId());
 		logger.info("{} 연결 끊킴", session.getId());
 	}
 	
@@ -117,6 +116,9 @@ public class EchoHandler extends TextWebSocketHandler {
 		case "sendMsg" : 
 			getRoom((String) param.get("sendId")).sendMessage(session, message);
 			break;
+		case "exitRoom" :
+			User user = (User) param.get("id");
+			user.getRoom().exitRoom(user);
 		}
 		
 	}
@@ -133,12 +135,5 @@ public class EchoHandler extends TextWebSocketHandler {
 		Room room = new Room();
 		room = roomManager.createRoom(user, (String) param.get("roomName"));
 		user.enterRoom(room);
-	}
-	
-	private void sendMessage(Map<String, Object> param, WebSocketSession session, TextMessage message) throws Exception {
-/*		for (Map<String, Object> user : userList) {
-			WebSocketSession sess = (WebSocketSession) user.get("session");
-			sess.sendMessage(new TextMessage(message.getPayload()));
-		}*/
 	}
 }

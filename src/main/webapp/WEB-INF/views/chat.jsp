@@ -11,7 +11,6 @@
 		</style>
 	</head>
 	<body>
-<!-- 		<button type="button" id="chat" onclick="chatController()"></button> -->
 		<div style="width: 704px; height: 500px">
 			<div class="chatRoom" style="border: 1px solid black; width: 500px; height: 100%"></div>
 			<div class="userListDiv" style="border: 1px solid black; width: 200px; height: 100%;">
@@ -22,6 +21,9 @@
 		<div class="inputDiv" style="margin-top: 5px; width: 700px">
 			<input type="text" name="message" style="width: 90%">
 			<button type="button" onclick="sendMsg()">보내기</button>
+		</div>
+		<div class="inputDiv" style="margin-top: 5px; width: 700px">
+			<a href="javascript:outRoom()">나가기</a>
 		</div>
 	</body>
 	<script type="text/javascript">
